@@ -1,0 +1,28 @@
+---
+- name: nginx installed
+  hosts: all
+  become: true
+  tasks:
+
+  - name: latest nginx package installed
+    apt:
+      name: nginx
+      state: latest
+    when: ansible_distribution == 'Ubuntu' or
+          ansible_distribution == 'Debian'
+  
+  - name: latest nginx package installed
+    yum:
+      name: nginx
+      state: latest
+    when: ansible_distribution == 'RedHat'
+  
+  - name: nginx enabled and running
+    service:
+      name: nginx
+      enabled: true
+      state: started
+  - name: copy index.html
+    copy:
+      src: web.html
+      dest: /var/www/html/index.html

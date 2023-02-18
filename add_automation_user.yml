@@ -1,0 +1,28 @@
+---
+- name: Add automation client (ansible user)
+  hosts: all
+  become: true
+
+  vars_prompt:
+    - name: "remote_user"
+      prompt: "Enter user on remote machine with root access"
+  
+
+  tasks:
+  - name: Add the user 'ansible' with a specific uid and a primary group of 'ansible' and in sudo
+    ansible.builtin.user:
+      name: ansible
+      comment: Ansible user
+      uid: 1666
+      group: ansible
+      state: present
+
+  - name: Set authorized_keys
+    authorized_key:
+      key: "{{ lookup('file', 'id_rsa.pub') }}"
+
+  - name: 
+    lineinfile:
+      dest: /etc/sudoers/
+      line: 'ansible ALL=(ALL) NOPASSWD:ALL'
+      state: present

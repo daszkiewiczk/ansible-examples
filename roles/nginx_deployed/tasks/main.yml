@@ -1,0 +1,30 @@
+---
+- name: latest nginx package installed
+  apt:
+    name: nginx
+    state: latest
+  when: ansible_distribution == 'Ubuntu' or
+        ansible_distribution == 'Debian'
+
+- name: latest nginx package installed
+  yum:
+    name: nginx
+    state: latest
+  when: ansible_distribution == 'RedHat' or
+        ansible_distribution == 'CentOS'
+
+- name: nginx_enabled_running
+  service:
+    name: nginx
+    enabled: true
+    state: started
+
+- name: landing_page_injected
+  template:
+    src: web.j2
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_nginx
+  
